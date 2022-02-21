@@ -223,6 +223,12 @@ func ImageTar(ref *reference.Spec, prefix string, tw tarWriter, resolv string, o
 				return err
 			}
 		} else if replace[hdr.Name] != "" {
+			// TODO: quick fix to avoid duplicate entries for replaced items
+			// as they are also "touched" but with different content
+			if _, ok := touch[hdr.Name]; ok {
+				touchFound[hdr.Name] = true
+			}
+
 			if hdr.Name != "etc/resolv.conf" || resolv == "" {
 				contents := replace[hdr.Name]
 				hdr.Size = int64(len(contents))
