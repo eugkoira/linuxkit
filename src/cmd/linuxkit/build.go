@@ -54,6 +54,7 @@ func build(args []string) {
 	buildCacheDir := buildCmd.String("cache", defaultLinuxkitCache(), "Directory for caching and finding cached image")
 	buildCmd.Var(&buildFormats, "format", "Formats to create [ "+strings.Join(outputTypes, " ")+" ]")
 	buildArch := buildCmd.String("arch", runtime.GOARCH, "target architecture for which to build")
+	buildPrefix := buildCmd.String("prefix", "", "Add a prefix to the root filesystem of the image")
 
 	if err := buildCmd.Parse(args); err != nil {
 		log.Fatal("Unable to parse args")
@@ -204,7 +205,7 @@ func build(args []string) {
 	if moby.Streamable(buildFormats[0]) {
 		tp = buildFormats[0]
 	}
-	err = moby.Build(m, w, moby.BuildOpts{Pull: *buildPull, BuilderType: tp, DecompressKernel: *buildDecompressKernel, CacheDir: cacheDir, DockerCache: *buildDocker, Arch: *buildArch})
+	err = moby.Build(m, w, moby.BuildOpts{Pull: *buildPull, BuilderType: tp, DecompressKernel: *buildDecompressKernel, CacheDir: cacheDir, DockerCache: *buildDocker, Arch: *buildArch, Prefix: *buildPrefix})
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
