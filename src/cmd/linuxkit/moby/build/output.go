@@ -95,6 +95,17 @@ var outFuns = map[string]func(base string, ir io.Reader, size int, arch string) 
 		}
 		return nil
 	},
+	"raw-uki": func(base string, image io.Reader, size int, arch string) error {
+		kernel, initrd, cmdline, _, err := tarToInitrd(image)
+		if err != nil {
+			return fmt.Errorf("Error converting to initrd: %v", err)
+		}
+		err = outputImg(outputImages["raw-uki"], base+"-uki.img", kernel, initrd, cmdline, arch)
+		if err != nil {
+			return fmt.Errorf("Error writing raw-uki output: %v", err)
+		}
+		return nil
+	},
 	"kernel+squashfs": func(base string, image io.Reader, size int, arch string) error {
 		err := outputKernelSquashFS(outputImages["squashfs"], base, image, arch)
 		if err != nil {

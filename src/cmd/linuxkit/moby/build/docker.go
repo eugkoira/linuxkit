@@ -25,15 +25,16 @@ func dockerRun(input io.Reader, output io.Writer, img string, runEnv []string, i
 
 	env := os.Environ()
 
+	// Temporarily disable pulling to test local changes
 	// Pull first to avoid https://github.com/docker/cli/issues/631
-	pull := exec.Command(docker, "pull", img)
-	pull.Env = env
-	if err := pull.Run(); err != nil {
-		if exitError, ok := err.(*exec.ExitError); ok {
-			return fmt.Errorf("docker pull %s failed: %v output:\n%s", img, err, exitError.Stderr)
-		}
-		return err
-	}
+	// pull := exec.Command(docker, "pull", img)
+	// pull.Env = env
+	// if err := pull.Run(); err != nil {
+	// 	if exitError, ok := err.(*exec.ExitError); ok {
+	// 		return fmt.Errorf("docker pull %s failed: %v output:\n%s", img, err, exitError.Stderr)
+	// 	}
+	// 	return err
+	// }
 
 	var errbuf strings.Builder
 	args := []string{"run", "--network=none", "--log-driver=none", "--rm", "-i"}
